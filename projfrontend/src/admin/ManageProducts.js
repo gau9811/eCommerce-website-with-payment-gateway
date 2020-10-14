@@ -1,39 +1,38 @@
-import React, {useState, useEffect} from "react"
+import React, { useState, useEffect } from "react";
 
-import Base from "../core/Base"
-import {Link} from "react-router-dom"
-import {isAuthenticated} from "../auth/helper"
-import {getProducts, deleteProduct} from "./helper/adminapicall"
+import Base from "../core/Base";
+import { Link } from "react-router-dom";
+import { isAutheticated } from "../auth/helper";
+import { getProducts, deleteProduct } from "./helper/adminapicall";
 
 const ManageProducts = () => {
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]);
 
-  const {user, token} = isAuthenticated()
+  const { user, token } = isAutheticated();
 
   const preload = () => {
-    getProducts().then((data) => {
-      if (data.err) {
-        console.log(data.err)
+    getProducts().then(data => {
+      if (data.error) {
+        console.log(data.error);
       } else {
-        setProducts(data)
-        console.log(data)
+        setProducts(data);
       }
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    preload()
-  }, [])
+    preload();
+  }, []);
 
-  const deleteThisProduct = (productId) => {
-    deleteProduct(productId, user._id, token).then((data) => {
-      if (data.err) {
-        console.log(data.err)
+  const deleteThisProduct = productId => {
+    deleteProduct(productId, user._id, token).then(data => {
+      if (data.error) {
+        console.log(data.error);
       } else {
-        preload()
+        preload();
       }
-    })
-  }
+    });
+  };
 
   return (
     <Base title="Welcome admin" description="Manage products here">
@@ -43,9 +42,7 @@ const ManageProducts = () => {
       </Link>
       <div className="row">
         <div className="col-12">
-          <h2 className="text-center text-white my-3">
-            Total {products.length} products
-          </h2>
+          <h2 className="text-center text-white my-3">Total 3 products</h2>
 
           {products.map((product, index) => {
             return (
@@ -64,7 +61,7 @@ const ManageProducts = () => {
                 <div className="col-4">
                   <button
                     onClick={() => {
-                      deleteThisProduct(product._id)
+                      deleteThisProduct(product._id);
                     }}
                     className="btn btn-danger"
                   >
@@ -72,12 +69,12 @@ const ManageProducts = () => {
                   </button>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </div>
     </Base>
-  )
-}
+  );
+};
 
-export default ManageProducts
+export default ManageProducts;

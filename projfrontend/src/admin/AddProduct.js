@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from "react"
-import Base from "../core/Base"
-import {Link, Redirect} from "react-router-dom"
-import {getCategories, createProduct} from "./helper/adminapicall"
-import {isAuthenticated} from "../auth/helper/index"
+import React, { useState, useEffect } from "react";
+import Base from "../core/Base";
+import { Link } from "react-router-dom";
+import { getCategories, createaProduct } from "./helper/adminapicall";
+import { isAutheticated } from "../auth/helper/index";
 
 const AddProduct = () => {
-  const {user, token} = isAuthenticated()
+  const { user, token } = isAutheticated();
 
   const [values, setValues] = useState({
     name: "",
@@ -17,11 +17,10 @@ const AddProduct = () => {
     category: "",
     loading: false,
     error: "",
-    createdProduct: false,
+    createdProduct: "",
     getaRedirect: false,
-    formData: "",
-    success: false,
-  })
+    formData: ""
+  });
 
   const {
     name,
@@ -34,30 +33,30 @@ const AddProduct = () => {
     error,
     createdProduct,
     getaRedirect,
-    formData,
-    success,
-  } = values
+    formData
+  } = values;
 
   const preload = () => {
-    getCategories().then((data) => {
+    getCategories().then(data => {
+      //console.log(data);
       if (data.error) {
-        setValues({...values, error: data.error})
+        setValues({ ...values, error: data.error });
       } else {
-        setValues({...values, categories: data, formData: new FormData()})
+        setValues({ ...values, categories: data, formData: new FormData() });
       }
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    preload()
-  }, [])
+    preload();
+  }, []);
 
-  const onSubmit = (event) => {
-    event.preventDefault()
-    setValues({...values, error: "", loading: true})
-    createProduct(user._id, token, formData).then((data) => {
-      if (data.err) {
-        setValues({...values, error: data.err})
+  const onSubmit = event => {
+    event.preventDefault();
+    setValues({ ...values, error: "", loading: true });
+    createaProduct(user._id, token, formData).then(data => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
       } else {
         setValues({
           ...values,
@@ -67,42 +66,26 @@ const AddProduct = () => {
           photo: "",
           stock: "",
           loading: false,
-          success: true,
-          createdProduct: data.name,
-        })
+          createdProduct: data.name
+        });
       }
-    })
-  }
+    });
+  };
 
-  const toHome = () => {
-    if (success) {
-      setTimeout(() => {
-        return <Redirect to="/admin/dashboard" />
-      }, 2000)
-    }
-  }
-  const handleChange = (name) => (event) => {
-    const value = name === "photo" ? event.target.files[0] : event.target.value
-    formData.set(name, value)
-    setValues({...values, [name]: value})
-  }
+  const handleChange = name => event => {
+    const value = name === "photo" ? event.target.files[0] : event.target.value;
+    formData.set(name, value);
+    setValues({ ...values, [name]: value });
+  };
 
   const successMessage = () => (
     <div
       className="alert alert-success mt-3"
-      style={{display: createdProduct ? "" : "none"}}
+      style={{ display: createdProduct ? "" : "none" }}
     >
       <h4>{createdProduct} created successfully</h4>
     </div>
-  )
-  const warningMessage = () => (
-    <div
-      className="alert alert-danger mt-3"
-      style={{display: error ? "" : "none"}}
-    >
-      <h4>{error}</h4>
-    </div>
-  )
+  );
 
   const createProductForm = () => (
     <form>
@@ -178,7 +161,7 @@ const AddProduct = () => {
         Create Product
       </button>
     </form>
-  )
+  );
 
   return (
     <Base
@@ -192,13 +175,11 @@ const AddProduct = () => {
       <div className="row bg-dark text-white rounded">
         <div className="col-md-8 offset-md-2">
           {successMessage()}
-          {warningMessage()}
           {createProductForm()}
-          {toHome()}
         </div>
       </div>
     </Base>
-  )
-}
+  );
+};
 
-export default AddProduct
+export default AddProduct;
